@@ -12,8 +12,7 @@ private:
     void _setup_pwm_counter(uint8_t freqPin);
 
 public:
-    uint8_t mTriggerPin;
-
+    static uint8_t sTriggerPin;
     static volatile uint8_t sIsFrequencyReady;
     static volatile uint32_t sFrequency;
     static volatile uint32_t sCount;
@@ -28,7 +27,7 @@ public:
     // Frequency counter using external trigger pulse input.
     void beginExtTrig(uint8_t pin, uint8_t extTriggerPin);
     uint32_t read();
-    uint8_t available();
+    bool available();
     void end();
 };
 
