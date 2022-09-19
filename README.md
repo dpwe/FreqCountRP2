@@ -1,5 +1,5 @@
 # FreqCountRP2
-#A frequency counter library for the RP2040
+## A frequency counter library for the RP2040
 
 ### Table of Contents
 
@@ -27,7 +27,7 @@ To use this library you have to import it into Arduino IDE as follows:
 #### Include the library in the sketch
 
 ```C++
-#include "FreqCountRp2.h"
+#include "FreqCountRP2.h"
 ```
 
 #### Initialize the instance
