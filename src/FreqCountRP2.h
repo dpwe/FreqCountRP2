@@ -7,12 +7,13 @@ class _FreqCountRP2
 {
 private:
     uint8_t mPin;
-    uint8_t mTriggerPin;
     struct repeating_timer mTimer;
 
     void _setup_pwm_counter(uint8_t freqPin);
 
 public:
+    uint8_t mTriggerPin;
+
     static volatile uint8_t sIsFrequencyReady;
     static volatile uint32_t sFrequency;
     static volatile uint32_t sCount;

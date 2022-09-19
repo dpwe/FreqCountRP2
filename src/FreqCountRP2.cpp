@@ -9,13 +9,13 @@ volatile uint8_t _FreqCountRP2::sIsFrequencyReady = false;
 volatile uint32_t _FreqCountRP2::sFrequency = 0;
 volatile uint32_t _FreqCountRP2::sCount = 0;
 volatile uint32_t _FreqCountRP2::sLastCount = 0;
-uint _FreqCountRP2::sSliceNum = 0;
+uint8_t _FreqCountRP2::sSliceNum = 0;
 
 static void _on_pwm_wrap() {
     // Clear the interrupt flag that brought us here
     pwm_clear_irq(_FreqCountRP2::sSliceNum);
     // Wind on the underlying counter.
-    _FreqCountRP2:sCount += (1L << 16);
+    _FreqCountRP2::sCount += (1L << 16);
 }
 
 static uint32_t _pwm_read(uint sliceNum) {
@@ -26,13 +26,13 @@ static uint32_t _pwm_read(uint sliceNum) {
         this_count = _FreqCountRP2::sCount;
     }
     this_count += part_count;
-    uint32_t advance = (this_count - _FreqCount::sLastCount);  // Will handle wraparound correctly.
-    _FreqCount::sLastCount = this_count;
+    uint32_t advance = (this_count - _FreqCountRP2::sLastCount);  // Will handle wraparound correctly.
+    _FreqCountRP2::sLastCount = this_count;
     return advance;
 }
 
 static void _on_trigger() {
-    _FreqCountRP2::sFrequency = _pwm_read(_FreqCountRPS::sSliceNum);
+    _FreqCountRP2::sFrequency = _pwm_read(_FreqCountRP2::sSliceNum);
     _FreqCountRP2::sIsFrequencyReady = true;
     gpio_acknowledge_irq(_FreqCountRP2::mTriggerPin, IO_IRQ_BANK0);
 }
