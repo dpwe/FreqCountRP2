@@ -8,7 +8,6 @@ class _FreqCountRP2
 private:
     uint8_t mPin;
     uint8_t mTriggerPin;
-    uint8_t mSliceNum;
     struct repeating_timer mTimer;
 
     void _setup_pwm_counter(uint8_t freqPin);
@@ -18,8 +17,7 @@ public:
     static volatile uint32_t sFrequency;
     static volatile uint32_t sCount;
     static volatile uint32_t sLastCount;
-
-    static portMUX_TYPE sMux;
+    static uint8_t sSliceNum;
 
     _FreqCountRP2();
     ~_FreqCountRP2();

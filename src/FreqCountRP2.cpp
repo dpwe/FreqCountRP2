@@ -9,19 +9,18 @@ volatile uint8_t _FreqCountRP2::sIsFrequencyReady = false;
 volatile uint32_t _FreqCountRP2::sFrequency = 0;
 volatile uint32_t _FreqCountRP2::sCount = 0;
 volatile uint32_t _FreqCountRP2::sLastCount = 0;
-
-uint _FreqCountRP2::mSliceNum = 0;
+uint _FreqCountRP2::sSliceNum = 0;
 
 static void _on_pwm_wrap() {
     // Clear the interrupt flag that brought us here
-    pwm_clear_irq(_FreqCountRP2::mSliceNum);
+    pwm_clear_irq(_FreqCountRP2::sSliceNum);
     // Wind on the underlying counter.
     _FreqCountRP2:sCount += (1L << 16);
 }
 
-static uint32_t _pwm_read(void) {
+static uint32_t _pwm_read(uint sliceNum) {
     uint32_t this_count = _FreqCountRP2::sCount;
-    uint16_t part_count = pwm_get_counter(_FreqCountRP2::mSliceNum);
+    uint16_t part_count = pwm_get_counter(sliceNum);
     if (part_count < 100) {
         // Maybe it just rolled over?  Re-check base_count.
         this_count = _FreqCountRP2::sCount;
@@ -33,7 +32,7 @@ static uint32_t _pwm_read(void) {
 }
 
 static void _on_trigger() {
-    _FreqCountRP2::sFrequency = _pwm_read();
+    _FreqCountRP2::sFrequency = _pwm_read(_FreqCountRPS::sSliceNum);
     _FreqCountRP2::sIsFrequencyReady = true;
     gpio_acknowledge_irq(_FreqCountRP2::mTriggerPin, IO_IRQ_BANK0);
 }
@@ -43,21 +42,21 @@ void FreqCountRP2::_setup_pwm_counter(uint freq_pin) {
     // Only the PWM B pins can be used as inputs.
     assert(pwm_gpio_to_channel(freq_pin) == PWM_CHAN_B);
     mPin = freq_pin;
-    mSliceNum = pwm_gpio_to_slice_num(freq_pin);
+    sSliceNum = pwm_gpio_to_slice_num(freq_pin);
 
     // Count once for every rising edge on PWM B input
     pwm_config cfg = pwm_get_default_config();
     pwm_config_set_clkdiv_mode(&cfg, PWM_DIV_B_RISING);
     pwm_config_set_clkdiv(&cfg, 1);
-    pwm_init(mSliceNum, &cfg, false);
+    pwm_init(sSliceNum, &cfg, false);
     gpio_set_function(freq_pin, GPIO_FUNC_PWM);
-    pwm_set_enabled(mSliceNum, true);
+    pwm_set_enabled(sSliceNum, true);
 
     // Setup the wraparound interrupt.
     // Mask our slice's IRQ output into the PWM block's single interrupt line,
     // and register our interrupt handler
-    pwm_clear_irq(mSliceNum);
-    pwm_set_irq_enabled(mSliceNum, true);
+    pwm_clear_irq(sSliceNum);
+    pwm_set_irq_enabled(sSliceNum, true);
     irq_set_exclusive_handler(PWM_IRQ_WRAP, _on_pwm_wrap);
     irq_set_enabled(PWM_IRQ_WRAP, true);
 }
@@ -91,12 +90,12 @@ void FreqCountRP2::beginTimer(uint freq_pin, uint period_ms) {
 }
 
 bool FreqCountRP2::available(void) {
-    return last_period_valid;
+    return sIsFrequencyValid;
 }
 
 uint32_t FreqCountRP2::read(void) {
-    last_period_valid = false;
-    return last_period;
+    sIsFrequencyValid = false;
+    return sFrequency;
 }
 
 _FreqCountRP2::_FreqCountRP2()
@@ -111,6 +110,11 @@ _FreqCountRP2::~_FreqCountRP2()
 
 void _FreqCountRP2::end()
 {
+    pwm_set_irq_enabled(sSliceNum, false);
+    pwm_set_enabled(sSliceNum, false);
+    irq_set_enabled(PWM_IRQ_WRAP, false);
+    irq_remove_handler(PWM_IRQ_WRAP, _on_pwm_wrap);
+
     if(mTriggerPin == 0) {
         cancel_repeating_timer(&mTimer);
     } else {
