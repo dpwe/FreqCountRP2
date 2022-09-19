@@ -22,6 +22,12 @@ To use this library you have to import it into Arduino IDE as follows:
 1. Download or clone this repository as a zip file.
 2. Go to "Sketch" > "Include Library" > "Add .ZIP library..." and select the zip file to import it.
 
+## Limitations
+
+Due to hardware limitations, the frequency input pin must always be an **odd-numbered GPIO**.
+
+Due to (needless) software limitations, GPIO 0 cannot be used as the trigger input pin.
+
 ## Usage
 
 #### Include the library in the sketch
@@ -34,12 +40,10 @@ To use this library you have to import it into Arduino IDE as follows:
 
 When using the internal time, set which pin to use and the length of the time frame in milliseconds.
 
-**Note:** Due to hardware limitations, the frequency input pin must always be an odd-numbered GPIO.
-
 ```C++
 void setup()
 {
-  int inputPin = 5;
+  int inputPin = 5;  // Must be odd-numbered.
   int timerMs = 1000;
   FreqCountRP2.beginTimer(inputPin, timerMs);
 }

@@ -6,31 +6,31 @@
 class _FreqCountRP2
 {
 private:
-  uint8_t mPin;
-  uint8_t mTriggerPin;
-  uint8_t mSliceNum;
-  struct repeating_timer mTimer;
+    uint8_t mPin;
+    uint8_t mTriggerPin;
+    uint8_t mSliceNum;
+    struct repeating_timer mTimer;
 
-  void _setup_pwm_counter(uint8_t freqPin);
+    void _setup_pwm_counter(uint8_t freqPin);
 
 public:
-  static volatile uint8_t sIsFrequencyReady;
-  static volatile uint32_t sFrequency;
-  static volatile uint32_t sCount;
-  static volatile uint32_t sLastCount;
+    static volatile uint8_t sIsFrequencyReady;
+    static volatile uint32_t sFrequency;
+    static volatile uint32_t sCount;
+    static volatile uint32_t sLastCount;
 
-  static portMUX_TYPE sMux;
+    static portMUX_TYPE sMux;
 
-  _FreqCountRP2();
-  ~_FreqCountRP2();
+    _FreqCountRP2();
+    ~_FreqCountRP2();
 
-  // Frequency counter using internal interval timer.
-  void beginTimer(uint8_t pin, uint16_t timerMs);
-  // Frequency counter using external trigger pulse input.
-  void beginExtTrig(uint8_t pin, uint8_t extTriggerPin);
-  uint32_t read();
-  uint8_t available();
-  void end();
+    // Frequency counter using internal interval timer.
+    void beginTimer(uint8_t pin, uint16_t timerMs);
+    // Frequency counter using external trigger pulse input.
+    void beginExtTrig(uint8_t pin, uint8_t extTriggerPin);
+    uint32_t read();
+    uint8_t available();
+    void end();
 };
 
 extern _FreqCountRP2 FreqCountRP2;
