@@ -1,0 +1,12 @@
+# classes
+_FreqCountRP2 KEYWORD1
+
+# instances
+FreqCountRP2  KEYWORD2
+
+# methods
+beginTimer    KEYWORD2
+beginExtTrig  KEYWORD2
+read          KEYWORD2
+available     KEYWORD2
+end           KEYWORD2
