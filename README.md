@@ -78,7 +78,7 @@ void loop()
 
 ## Credits <a name="credits"></a>
 
-* [FreqCountESP](https://github.com/karparan/FreqCountESP)
+* [FreqCountESP](https://github.com/karpraran/FreqCountESP)
 * [FreqCount library for Arduino & Teensy boards](https://www.pjrc.com/teensy/td_libs_FreqCount.html)
 
 ## License <a name="license"></a>
