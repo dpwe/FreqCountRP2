@@ -11,7 +11,9 @@
 
 ## About
 
-A frequency counter library for RP2040. It counts the numbers of pulses on a specified pin during a fixed time frame using native interrupts and timers. It only supports one instance per sketch for now.
+A frequency counter library for RP2040. It counts the numbers of pulses on a 
+specified pin during a fixed time interval (or between edges on a second pin) 
+using native interrupts and timers. It only supports one instance per sketch for now.
 
 The API (and documentation) are copied from [FreqCountESP](http://github.com/kapraran/FreqCountESP) which provides the same functionality for the ESP32 platform.
 
