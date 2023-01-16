@@ -24,8 +24,9 @@ The clock inputs can be gated via a selectable GPIO input pin.
 Simple level-based gating allows measuring the pulse width of input pulses/PWM 
 (in units of the system clock).
 However, the gating also provides "rising-edge" and "falling-edge" gating
-(see fig 103 on page 524 of the [RP2040 Data Sheet]
-(https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf#page524))
+(see fig 103 on page 524 of the 
+[RP2040 Data Sheet](https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf#page524)
+).
 It's not immediately clear what this means, but it appears to be that when the 
 specified edge occurs at the input pin, exactly one pulse from the 125 MHz system clock
 is fed through to the counter.  Thus, this configuration is effectively a pulse
