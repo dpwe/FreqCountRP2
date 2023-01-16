@@ -15,6 +15,24 @@ A frequency counter library for RP2040. It counts the numbers of pulses on a spe
 
 The API (and documentation) are copied from [FreqCountESP](http://github.com/kapraran/FreqCountESP) which provides the same functionality for the ESP32 platform.
 
+## Frequency Counting on the RP2040
+
+At first glance, the RP2040 chip does not appear to have a frequency counter peripheral.
+However, this code achieves that functionality via the PWM system.
+The PWM channels include 16 bit counters driven by the 125 MHz system clock.
+The clock inputs can be gated via a selectable GPIO input pin.  
+Simple level-based gating allows measuring the pulse width of input pulses/PWM 
+(in units of the system clock).
+However, the gating also provides "rising-edge" and "falling-edge" gating
+(see fig 103 on page 524 of the [RP2040 Data Sheet]
+(https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf#page524))
+It's not immediately clear what this means, but it appears to be that when the 
+specified edge occurs at the input pin, exactly one pulse from the 125 MHz system clock
+is fed through to the counter.  Thus, this configuration is effectively a pulse
+counter, with the limitation that input edges are "synchronous" at 125 MHz (meaning
+input edges will be missed if they occur faster than this).
+
+I was actually surprised this works, but it does, certainly up to 10 MHz input.
 
 ## Installation
 
